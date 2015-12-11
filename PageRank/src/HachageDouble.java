@@ -19,7 +19,7 @@ public class HachageDouble {
     public HachageDouble(int taille, int k){
         this.taille = taille;
         this.k = k;
-        tab = new Vector<String>();
+        tab = new Vector<>();
         nbComparaisonMotExistant = new Vector<>();
         nbComparaisonMotNonExistant = new Vector<>();
 
@@ -29,7 +29,8 @@ public class HachageDouble {
         }
     }
 
-    public boolean insert(String elm){
+    public int insert(String elm){
+        //System.out.println("nombre d'element : " + nbElem);
         int key = Math.abs(elm.hashCode() % (this.taille)); //calcul de la clé grace à la fonction de hachage
         if (nbElem != taille) { //test si le tableau est plein
             while (tab.get(key) != null){ //on boucle avec la case suivante tant qu'on a pas trouvé de case vide
@@ -37,32 +38,31 @@ public class HachageDouble {
             }
             tab.set(key, elm); //ajout de l'element
             nbElem++;
-            return true;
+            return key;
         }
-        return false;
+        return -1;
     }
 
-    public boolean isPresent(String elm){
+    public int isPresent(String elm){
         int comparaison = 0;
         int key = Math.abs(elm.hashCode() % (this.taille));
         while (tab.get(key) != null){
             comparaison++;
             if (tab.get(key).equals(elm)){
                 nbComparaisonMotExistant.add(comparaison);
-                return true;
+                return key;
             }
             else
                 key = (key+k)%(taille);
         }
         nbComparaisonMotNonExistant.add(comparaison);
-        return false;
+        return -1;
 
     }
 
     public void verificateurOrthographe(BufferedReader buff) throws IOException{
-        List<String> l = new ArrayList<String>();
+       // List<String> l = new ArrayList<>();
         int nbFaute = 0;
-        int hx = 0;
 
         try {
             String line;
@@ -83,7 +83,7 @@ public class HachageDouble {
                     w = w.replace("…", "");
                     w = w.toLowerCase();
                     if (!w.equals("")){ //test si le mot correspond à rien du tout pour éviter de le prendre en compte
-                        if (!isPresent(w)){ //test si le mot est contenu dans le dictionnaire
+                        if (isPresent(w)==-1){ //test si le mot est contenu dans le dictionnaire
                             //System.out.println("Faute : " + w);
                             nbFaute++;
                         }
