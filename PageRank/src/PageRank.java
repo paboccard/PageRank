@@ -14,15 +14,16 @@ public class PageRank {
 
     public static void main(String[] args) {
 
+        ElementArray element = new ElementArray();
         int taille = 500000;
-        HachageDouble h = new HachageDouble(taille, taille - 1);
+        HachageDouble<ElementArray> h = new HachageDouble(taille, taille - 1);
 
         List<String> l = new ArrayList<>();
-        Vector<Vector<String>> index = new Vector<Vector<String>>();
+        /*Vector<Vector<String>> index = new Vector<Vector<String>>();
         index.setSize(taille);
         for (int i = 0; i < index.size(); i++) {
             index.set(i, null);
-        }
+        }*/
 
         long startTime = System.currentTimeMillis();
         try {
@@ -41,14 +42,17 @@ public class PageRank {
         }
 
         Vector<String> vstringTmp = new Vector<>();
+        ElementArray elmTmp = null;
         int keyTmp = 0;
         for (String s : l) {
             if (s.charAt(0) != 9) {
+
                 if (vstringTmp.size() > 0) {
-                    index.set(keyTmp, (Vector<String>) vstringTmp.clone());
+                    h.getElement(keyTmp).element = (Vector<String>) vstringTmp.clone();
                     vstringTmp.clear();
                 }
-                if (!((keyTmp = h.insert(s)) >= 0)) {
+                elmTmp = new ElementArray(s,null);
+                if (!((keyTmp = h.insert(elmTmp)) >= 0)) {
                     System.out.println("Taille trop petite");
                     return;
                 }
@@ -57,14 +61,15 @@ public class PageRank {
             }
         }
         int key = 0;
-        if ((key = h.isPresent("oreille")) >= 0)
-            for (String s: index.get(key)) {
+        elmTmp = new ElementArray("oreille", new Vector<String>());
+        if ((key = h.isPresent(elmTmp)) >= 0)
+            for (String s: h.getElement(key).element) {
                 System.out.println(s);
             }
 
-        /*for (String s : h.tab) {
-            if (s != null)
-                System.out.println("\ts = " + s);
+        /*for (ElementArray e : h.tab) {
+            if (e != null)
+                e.afficher();
         }*/
         /*
         for (Vector<String> vs : index) {

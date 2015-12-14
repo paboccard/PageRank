@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Vector;
 
 
-public class HachageDouble {
+public class HachageDouble<T extends AbstractElement> {
 
-    Vector<String> tab;
+    Vector<T> tab;
     int k;
     int taille;
     int nbElem = 0;
@@ -29,9 +29,9 @@ public class HachageDouble {
         }
     }
 
-    public int insert(String elm){
+    public int insert(T elm){
         //System.out.println("nombre d'element : " + nbElem);
-        int key = Math.abs(elm.hashCode() % (this.taille)); //calcul de la clé grace à la fonction de hachage
+        int key = Math.abs(elm.key.hashCode() % (this.taille)); //calcul de la clé grace à la fonction de hachage
         if (nbElem != taille) { //test si le tableau est plein
             while (tab.get(key) != null){ //on boucle avec la case suivante tant qu'on a pas trouvé de case vide
                 key = (key+k)%(taille);
@@ -43,12 +43,12 @@ public class HachageDouble {
         return -1;
     }
 
-    public int isPresent(String elm){
+    public int isPresent(T elm){
         int comparaison = 0;
-        int key = Math.abs(elm.hashCode() % (this.taille));
+        int key = Math.abs(elm.key.hashCode() % (this.taille));
         while (tab.get(key) != null){
             comparaison++;
-            if (tab.get(key).equals(elm)){
+            if (tab.get(key).compareTo(elm.key) == 0){
                 nbComparaisonMotExistant.add(comparaison);
                 return key;
             }
@@ -60,40 +60,12 @@ public class HachageDouble {
 
     }
 
-    public void verificateurOrthographe(BufferedReader buff) throws IOException{
-       // List<String> l = new ArrayList<>();
-        int nbFaute = 0;
-
-        try {
-            String line;
-            while ((line = buff.readLine()) != null) {
-                String[] words = line.split(" "); //réccupération de tous les mots de la ligne
-                for (String w : words){
-                    w = w.replace(",", "");
-                    w = w.replace(".", "");
-                    w = w.replace("?", "");
-                    w = w.replace("!", "");
-                    w = w.replace("=", "");
-                    w = w.replace(":", "");
-                    w = w.replace("\"", "");
-                    w = w.replace("(", "");
-                    w = w.replace(")", "");
-                    w = w.replace("[", "");
-                    w = w.replace("]", "");
-                    w = w.replace("…", "");
-                    w = w.toLowerCase();
-                    if (!w.equals("")){ //test si le mot correspond à rien du tout pour éviter de le prendre en compte
-                        if (isPresent(w)==-1){ //test si le mot est contenu dans le dictionnaire
-                            //System.out.println("Faute : " + w);
-                            nbFaute++;
-                        }
-                    }
-                }
-            }
-        } finally {
-            buff.close();
-        }
-        System.out.println("Nombre de faute : " + nbFaute);
+    public T getElement(int key){
+        T elm;
+        if ((elm = tab.get(key)) != null)
+            return elm;
+        else
+            return null;
     }
 
 }
